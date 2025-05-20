@@ -118,6 +118,8 @@ oidc:
   # dexNamespace:
   # encodedClientID:
 
+  # If false, dexgate will ensure requested scopes are managed by the OIDC provider.
+  skipCheckScopes: false
 
 users:
   allowedUsers: []

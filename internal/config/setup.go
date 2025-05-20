@@ -47,6 +47,7 @@ func Setup() {
 	var usersConfigMapName string
 	var usersConfigMapKey string
 	var loginURLOverride string
+	var skipCheckScopes bool
 
 	pflag.StringVar(&configFile, "config", "config.yml", "Configuration file")
 	pflag.StringVar(&logLevel, "logLevel", "INFO", "Log level (PANIC|FATAL|ERROR|WARN|INFO|DEBUG|TRACE)")
@@ -63,6 +64,7 @@ func Setup() {
 	pflag.StringVar(&usersConfigMapName, "usersConfigMapName", "", "Users/Groups permission configMap name.")
 	pflag.StringVar(&usersConfigMapKey, "usersConfigMapKey", "users.yml", "Users/Groups permission key in configMap.")
 	pflag.StringVar(&loginURLOverride, "loginURLOverride", "", "Allow overriding of scheme and host part of the login URL provided by the OIDC server.")
+	pflag.BoolVar(&skipCheckScopes, "skipCheckScopes", false, "If not set, dexgate will ensure requested scopes are managed by the OIDC provider.")
 
 	pflag.CommandLine.SortFlags = false
 	pflag.Parse()
@@ -91,6 +93,7 @@ func Setup() {
 	adjustConfigString(pflag.CommandLine, &Conf.UsersConfigMap.ConfigMapName, "usersConfigMapName")
 	adjustConfigString(pflag.CommandLine, &Conf.UsersConfigMap.ConfigMapKey, "usersConfigMapKey")
 	adjustConfigString(pflag.CommandLine, &Conf.OidcConfig.LoginURLOverride, "loginURLOverride")
+	adjustConfigBool(pflag.CommandLine, &Conf.OidcConfig.SkipCheckScopes, "skipCheckScopes")
 
 	// -----------------------------------Handle logging  stuff
 	if Conf.LogMode != "dev" && Conf.LogMode != "json" {

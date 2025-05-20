@@ -34,3 +34,4 @@ data:
         - groups
         - email
       debug: {{ .Values.oidc.debug }}
+      skipCheckScopes: {{ .Values.oidc.skipCheckScopes }}

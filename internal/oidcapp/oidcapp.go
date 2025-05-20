@@ -91,14 +91,16 @@ func NewOidcApp(oidcConfig *config.OidcConfig) (*OidcApp, error) {
 			return false
 		}()
 	}
-	// Check if configured scopes match the supported one.
-	ssmap := make(map[string]bool)
-	for _, scope := range s.ScopesSupported {
-		ssmap[scope] = true
-	}
-	for _, scope := range config.Conf.OidcConfig.Scopes {
-		if _, ok := ssmap[scope]; !ok {
-			return nil, fmt.Errorf("Scope '%s' is not supported by this OIDC server", scope)
+	if !config.Conf.OidcConfig.SkipCheckScopes {
+		// Check if configured scopes match the supported one.
+		ssmap := make(map[string]bool)
+		for _, scope := range s.ScopesSupported {
+			ssmap[scope] = true
+		}
+		for _, scope := range config.Conf.OidcConfig.Scopes {
+			if _, ok := ssmap[scope]; !ok {
+				return nil, fmt.Errorf("scope '%s' is not supported by this OIDC server", scope)
+			}
 		}
 	}
 	return app, nil

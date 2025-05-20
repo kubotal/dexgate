@@ -28,9 +28,9 @@ var log *logrus.Entry
 func main() {
 	config.Setup()
 	log = config.Log
-	log.Infof("Dexgate %s listening at '%s' to forward to '%s' (Logleve:%s)", config.Version, config.Conf.BindAddr, config.Conf.TargetURL, config.Conf.LogLevel)
+	log.Infof("Dexgate %s (build:%s) listening at '%s' to forward to '%s' (Logleve:%s)", config.Version, config.BuildTs, config.Conf.BindAddr, config.Conf.TargetURL, config.Conf.LogLevel)
 	log.Infof("Session will expire after %s of inactivity and will not be longer than %s", config.IdleTimeout.String(), config.SessionLifetime.String())
-	log.Infof("Request scopes: %s", strings.Join(config.Conf.OidcConfig.Scopes, ", "))
+	log.Infof("Request scopes: %s (validated:%t)", strings.Join(config.Conf.OidcConfig.Scopes, ", "), !config.Conf.OidcConfig.SkipCheckScopes)
 	sessionManager := scs.New()
 	sessionManager.Cookie.Name = "dg_session"
 	sessionManager.IdleTimeout = config.IdleTimeout

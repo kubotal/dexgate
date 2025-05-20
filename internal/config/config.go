@@ -36,6 +36,7 @@ type OidcConfig struct {
 	RootCAFile       string   `yaml:"rootCAFile"`       // The root CA file for validation of IssuerURL
 	LoginURLOverride string   `yaml:"loginURLOverride"` // Allow overriding of scheme and host part of the login URL provided by the OIDC server
 	Debug            bool     `yaml:"debug"`            // Print all request and responses from the OpenID Connect issuer.
+	SkipCheckScopes  bool     `yaml:"skipCheckScopes"`  // If false, dexgate will ensure requested scopes are managed by the OIDC provider.
 }
 
 type SessionConfig struct {

@@ -2,4 +2,6 @@
 
 package config
 
-var Version = ""
+var Version = "0.1.3-snapshot"
+var BuildTs = "20250520.102141"
+
