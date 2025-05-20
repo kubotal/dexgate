@@ -1,5 +1,5 @@
 # Image URL to use all building/pushing image targets
-VERSION ?= v0.1.2
+VERSION ?= 0.1.3-snapshot
 DOCKER_REPO := ghcr.io/opendataplatform
 BUILDX_CACHE=/tmp/docker_cache
 
