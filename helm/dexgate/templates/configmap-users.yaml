@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dexgate-users
+  name: {{ include "dexgate.fullname" . }}-users
   namespace: {{ .Release.Namespace  }}
 data:
   users.yml: |

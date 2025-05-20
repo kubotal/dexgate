@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: dexgate-oidc-ca
+  name: {{ include "dexgate.fullname" . }}-oidc-ca
   namespace: {{ .Release.Namespace  }}
 data:
   ca.crt: {{ .Values.oidc.ca.crt }}

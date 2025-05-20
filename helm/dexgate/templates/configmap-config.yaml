@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dexgate-config
+  name: {{ include "dexgate.fullname" . }}-config
   namespace: {{ .Release.Namespace  }}
 data:
   config.yaml: |
@@ -10,9 +10,9 @@ data:
     logLevel:   "{{ .Values.logLevel }}"
     targetURL: "{{ .Values.proxy.targetURL }}"
     passthroughs: [ "/favicon.ico" ]
-    tokenDisplay: False
+    tokenDisplay: {{ .Values.tokenDisplay }}
     usersConfigMap:
-      configMapName: dexgate-users
+      configMapName: {{ include "dexgate.fullname" . }}-users
     oidc:
       {{- if .Values.oidc.clientID.secret.name }}
       clientIDEnv: CLIENT_ID

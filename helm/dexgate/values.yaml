@@ -1,17 +1,45 @@
 
+nameOverride:
+
 logMode: "json"
 logLevel: "INFO"
-image: ghcr.io/opendataplatform/dexgate:v0.1.2
-imagePullPolicy: Always
-imagePullSecrets: []
-resources: {}
+image:
+  pullSecrets: []
+  pullPolicy: IfNotPresent
+  repository: quay.io/kubotal/dexgate
+  # -- Overrides the image tag whose default is the chart appVersion.
+  tag:
+
+resources:
+  limits:
+    memory: 500Mi
+    cpu: "0.4"
+  requests:
+    memory: 500Mi
+    cpu: "0.2"
+
+# TODO: Allow this to be set
+podSecurityContext:
+  # runAsUser: 1000
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - "ALL"
+
+
+tokenDisplay: false
 
 proxy:
   # Required: The URL of the targeted web application. Typically, refer to a K8s Service
   targetURL:
 
 ingress:
-  class: nginx
   # Required: The ingress FQDN
   host:
   # Will setup HTTPS if defined
@@ -65,13 +93,18 @@ oidc:
     secret:
       name:
       key:
+
   # Must match the value defined in Dex
   issuerURL:
+
   #
-  # This parameter is required if the dex server is secured (https)
+  # One of ca.crt or ca.secret.name parameter is required if the dex server is secured (https)
   # crt is base64 encoded certificate
   ca:
     crt:
+    secret:
+      name:
+      key:
   #
   # Display OIDC trace. Quite verbose. Use only in case of debugging
   debug: false

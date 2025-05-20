@@ -2,4 +2,4 @@
 
 package config
 
-var Version = "0.1.3-snapshot"
+var Version = ""

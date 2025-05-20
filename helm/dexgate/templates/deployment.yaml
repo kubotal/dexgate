@@ -2,29 +2,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dexgate
+  name: {{ include "dexgate.fullname" . }}
   namespace: {{ .Release.Namespace  }}
   labels:
-    app: dexgate
+    app: {{ include "dexgate.fullname" . }}
+  annotations:
+    configmap.reloader.stakater.com/reload: "{{ include "dexgate.fullname" . }}-config"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dexgate
+      app: {{ include "dexgate.fullname" . }}
   template:
     metadata:
       labels:
-        app: dexgate
+        app: {{ include "dexgate.fullname" . }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      serviceAccountName: {{ include "dexgate.fullname" . }}
+      {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{ with .Values.serviceAccountName }}
-      serviceAccountName: {{ . }}
-      {{ end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
-      - name: dexgate
+      - name: {{ include "dexgate.fullname" . }}
         args:
           - --config
           - /conf/config.yaml
@@ -32,8 +36,8 @@ spec:
           - --oidcRootCAFile
           - /issuerca/ca.crt
 {{ end }}
-        image: {{ .Values.image }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -70,7 +74,7 @@ spec:
       volumes:
       - name: configmap-config
         configMap:
-          name: dexgate-config
+          name: {{ include "dexgate.fullname" . }}-config
           defaultMode: 420
           items:
           - key: config.yaml
@@ -79,10 +83,19 @@ spec:
 {{ if .Values.oidc.ca.crt }}
       - name: issuer-ca
         secret:
-          secretName: dexgate-oidc-ca
+          secretName: {{ include "dexgate.fullname" . }}-oidc-ca
           defaultMode: 420
           items:
             - key: ca.crt
+              mode: 420
+              path: ca.crt
+{{ else if .Values.oidc.ca.secret.name }}
+      - name: issuer-ca
+        secret:
+          secretName: {{ .Values.oidc.ca.secret.name }}
+          defaultMode: 420
+          items:
+            - key: {{ .Values.oidc.ca.secret.key }}
               mode: 420
               path: ca.crt
 {{ end }}

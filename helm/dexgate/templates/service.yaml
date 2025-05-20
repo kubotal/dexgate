@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dexgate
+  name: {{ include "dexgate.fullname" . }}
   namespace: {{ .Release.Namespace  }}
   labels:
-    app: dexgate
+    app: {{ include "dexgate.fullname" . }}
 spec:
   type: ClusterIP
   ports:
@@ -13,5 +13,5 @@ spec:
       targetPort: http
       protocol: TCP
   selector:
-    app: dexgate
+    app: {{ include "dexgate.fullname" . }}
 
